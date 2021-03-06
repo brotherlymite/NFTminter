@@ -1,10 +1,11 @@
-import {Navbar, Form, Button, Alert, ToggleButtonGroup, ToggleButton} from 'react-bootstrap'
+import { Form, Button, Alert, ToggleButtonGroup, ToggleButton} from 'react-bootstrap'
 import Web3 from 'web3'
 import React, { Component } from 'react'
 import 'bootstrap/dist/css/bootstrap.css'
 import './App.css'
-import logo from './polygon.svg'
 import {pinJSONToIPFS, pinFileToIPFS} from './UploadMetaData'
+import Particles from "react-tsparticles";
+import Navstuff from "./Components/Navstuff";
 
 const abi = require('./abi.json')
 const abi_1155 = require('./abi_1155.json')
@@ -64,6 +65,10 @@ class App extends Component {
     this.handleSubmit = this.handleSubmit.bind(this)
     this.loadBlockchainData = this.loadBlockchainData.bind(this)
     this.onValueChange = this.onValueChange.bind(this)
+
+    //Particle JS
+    this.particlesInit = this.particlesInit.bind(this);
+    this.particlesLoaded = this.particlesLoaded.bind(this);
   }
 
   validateForm = () =>{
@@ -187,83 +192,161 @@ class App extends Component {
     event.preventDefault();
   }
 
+  particlesInit(main) {
+    console.log(main);
+    // you can initialize the tsParticles instance (main) here, adding custom shapes or presets
+  }
+  particlesLoaded(container) {
+    console.log(container);
+  }
+
   render() {
     return (
-  <>
-    <Navbar bg="light">
-        <Navbar.Brand href="#">
-          <img
-            src={logo}
-            width="120px"
-            height="45px"
-            className="d-inline-block align-center"
-            alt="React Bootstrap logo"
-          />
-        </Navbar.Brand>
+    <div>
+      <Navstuff />
+      <div className="wrapper">
+      <Particles
+        id="tsparticles"
+        init={this.particlesInit}
+        loaded={this.particlesLoaded}
+        options={{
+          background: {
+            color: {
+              value: "#4B4453",
+            },
+          },
 
-        <Navbar.Text className="">
-            <div className="topnav-centered">
-                <a href="#">POLYGON NFT MINTER</a>
-            </div>
-       </Navbar.Text>
+          backgroundMode: {
+            enable: true
+          },
 
-    </Navbar> 
-     
-    <div className="container">
+          fpsLimit: 60,
+          interactivity: {
+            detectsOn: "canvas",
+            events: {
+              onClick: {
+                enable: false,
+                mode: "push",
+              },
+              onHover: {
+                enable: false,
+                mode: "repulse",
+              },
+              resize: true,
+            },
+            modes: {
+              bubble: {
+                distance: 400,
+                duration: 2,
+                opacity: 0.8,
+                size: 40,
+              },
+              push: {
+                quantity: 4,
+              },
+              repulse: {
+                distance: 200,
+                duration: 0.4,
+              },
+            },
+          },
+          particles: {
+            color: {
+              value: "#ffffff",
+            },
+            links: {
+              color: "#ffffff",
+              distance: 150,
+              enable: true,
+              opacity: 0.5,
+              width: 1,
+            },
+            collisions: {
+              enable: true,
+            },
+            move: {
+              direction: "none",
+              enable: true,
+              outMode: "bounce",
+              random: false,
+              speed: 6,
+              straight: false,
+            },
+            number: {
+              density: {
+                enable: true,
+                value_area: 900,
+              },
+              value: 80,
+            },
+            opacity: {
+              value: 0.5,
+            },
+            shape: {
+              type: "circle",
+            },
+            size: {
+              random: true,
+              value: 5,
+            },
+          },
+          detectRetina: true,
+        }}
+      />
+      
+      {/* TO DO:-
+      Make the form more responsive wrapping a container around it */}
 
-      <Button variant="primary" className="float-right" onClick={this.loadBlockchainData}>Connect to Web3</Button>
-      <br/><br/>
-      {this.state.authorized ? 
-          this.state.networkId == "137" || this.state.networkId == "80001" ? 
-                <p>{this.state.account}</p> 
-            : <p className="float-right">Please change network to MATIC mainnet or Testnet and click "Connect To Web3"</p>
-        : <p className="float-right">web3 is not connected</p> }
-
+      <div className="box">
       <Form name="myForm" onSubmit={this.handleSubmit}> 
 
-          <Form.Group controlId="formText">
-            <Form.Label>Name of NFT</Form.Label>
-            <Form.Control type="text" name="name" value={this.state.name} placeholder="Mitra Hall of Fame #1" onChange={this.handleInputChange} />
-          </Form.Group>
+        <Form.Group controlId="formText">
+          <Form.Label className="Text">Name of NFT</Form.Label>
+          <Form.Control type="text" name="name" value={this.state.name} placeholder="Mitra Hall of Fame #1" onChange={this.handleInputChange} />
+        </Form.Group>
 
-          <Form.Group controlId="formText">
-            <Form.Label>Description</Form.Label>
-            <Form.Control type="text" as="textarea" name="description" value={this.state.description} placeholder="Lorem Ipsum random words" onChange={this.handleInputChange} />
-          </Form.Group>
+        <Form.Group controlId="formText">
+          <Form.Label className="Text">Description</Form.Label>
+          <Form.Control type="text" as="textarea" name="description" value={this.state.description} placeholder="Lorem Ipsum random words" onChange={this.handleInputChange} />
+        </Form.Group>
 
-         <Form.Group controlId="formText">
-            <Form.Label>Social Media URL (optional)</Form.Label>
-            <Form.Control type="text" name="url" value={this.state.url} placeholder="https://twitter.com/example" onChange={this.handleInputChange} />
-         </Form.Group>
-
-        <Form.Group>
-            <Form.File id="exampleFormControlFile1" label="Image or Logo"  onChange={this.onFileChange} />
+        <Form.Group controlId="formText">
+          <Form.Label className="Text">Social Media URL (optional)</Form.Label>
+          <Form.Control type="text" name="url" value={this.state.url} placeholder="https://twitter.com/example" onChange={this.handleInputChange} />
         </Form.Group>
 
         <Form.Group>
-            <ToggleButtonGroup type="radio" name="options" defaultValue="erc721" >
-                <ToggleButton value="erc721" onChange={this.onValueChange}>ERC721</ToggleButton>
-                <ToggleButton value="erc1155" onChange={this.onValueChange}>ERC1155</ToggleButton>
-            </ToggleButtonGroup>
+          <Form.Label className="Text">Upload Image or Logo</Form.Label>
+          <Form.File id="formcheck-api-custom" custom>
+            <Form.File.Input isValid />
+            <Form.File.Label data-browse="Browse">
+              example.png
+            </Form.File.Label>
+          </Form.File>
+        </Form.Group>
+
+        <Form.Group>
+          <ToggleButtonGroup type="radio" name="options" defaultValue="erc721" >
+              <ToggleButton variant="outline-light" value="erc721" onChange={this.onValueChange}>ERC721</ToggleButton>
+              <ToggleButton variant="outline-light" value="erc1155" onChange={this.onValueChange}>ERC1155</ToggleButton>
+          </ToggleButtonGroup>
         </Form.Group>
 
         {this.state.selectedOption == "erc1155" ?
-                <Form.Group>
-                    <Form.Label>Quantity: </Form.Label>
-                    <input type="number" value={this.state.quantity} onChange={this.handleInputChange} name="quantity" min="1" max="200"/>
-                </Form.Group>
+              <Form.Group>
+                  <Form.Label className="Text">Quantity: </Form.Label> {" "}
+                  <input type="number" value={this.state.quantity} onChange={this.handleInputChange} name="quantity" min="1" max="200"/>
+              </Form.Group>
 
-            : null
+          : null
         }
-                
-        <Button variant="primary" type="submit">
-            Submit
+        <Button variant="outline-success" type="submit">
+          Submit
         </Button>
 
       </Form>
-
-      <br/>
-
+      </div>
+      </div>
       {this.state.done || this.state.failed ? null : this.state.submitted ? <p>Waiting...</p> : null }
 
       {this.state.imageHash && this.state.done ? <Alert variant="success"> <p> Image uploaded to IPFS successfully! </p> </Alert>: null } 
@@ -276,11 +359,8 @@ class App extends Component {
                     <a href={'https://explorer-mainnet.maticvigil.com/tx/' + this.state.txnhash} target="_blank">Txn Hash </a> 
                 : <a href={'https://explorer-mumbai.maticvigil.com/tx/' + this.state.txnhash} target="_blank">Txn Hash </a>
           : null
-      }
- 
-    </div>
-        
-  </> 
+      } 
+    </div> 
     );
   }
 
