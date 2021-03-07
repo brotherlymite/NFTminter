@@ -1,15 +1,14 @@
-import { Form, Button, Alert, ToggleButtonGroup, ToggleButton} from 'react-bootstrap'
+import {Navbar,Nav, Form, Button, Alert, ToggleButtonGroup, ToggleButton} from 'react-bootstrap'
 import Web3 from 'web3'
 import React, { Component } from 'react'
 import 'bootstrap/dist/css/bootstrap.css'
 import './App.css'
 import {pinJSONToIPFS, pinFileToIPFS} from './UploadMetaData'
 import Particles from "react-tsparticles";
-import Navstuff from "./Components/Navstuff";
+import logo from './polygon_logo_White.svg'
 
 const abi = require('./abi.json')
 const abi_1155 = require('./abi_1155.json')
-
 
 const MAINNET_1155 = "0xd52a86110c9a7597a057Ae2bB4F577B6CD42a639"
 const TESTNET_1155 = "0x692d14f95012778aBb720Be8510f8eAeEaf74F44"
@@ -118,7 +117,6 @@ class App extends Component {
     }
 
   handleSubmit = async event => {
-    
 
     let temp = async () => {
 
@@ -194,7 +192,6 @@ class App extends Component {
 
   particlesInit(main) {
     console.log(main);
-    // you can initialize the tsParticles instance (main) here, adding custom shapes or presets
   }
   particlesLoaded(container) {
     console.log(container);
@@ -203,7 +200,29 @@ class App extends Component {
   render() {
     return (
     <div>
-      <Navstuff />
+      {/* Navbar */}
+      <Navbar variant="dark" className="color-nav">
+        <Navbar.Brand href="#">
+          <img
+            src={logo}
+            width="120px"
+            height="45px"
+            className="d-inline-block align-center"
+            alt="React Bootstrap logo"
+          /> {" "}
+        </Navbar.Brand>
+        <Nav className="mr-auto">
+        <Nav.Link href="#home">NFT MINTER</Nav.Link>
+        </Nav>
+       <Button variant="outline-light" onClick={this.loadBlockchainData}>Connect Web3</Button>{' '} <br/>
+       {this.state.authorized ? 
+          this.state.networkId == "137" || this.state.networkId == "80001" ? 
+                <p>{this.state.account}</p> 
+            : <p className="float-right">Please change network to MATIC mainnet or Testnet and click "Connect To Web3"</p>
+        : <p className="float-right"></p> }
+      </Navbar>
+
+
       <div className="wrapper">
       <Particles
         id="tsparticles"
